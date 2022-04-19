@@ -39,3 +39,6 @@ If you forgot your image name, you can find it in the list with `docker images`.
 > or build a custom *libusb* without *udev* suport.
 > Refer to: [OpenVINO Docker Setup](https://docs.openvino.ai/2021.3/openvino_docs_install_guides_installing_openvino_docker_linux.html)
 
+# Modification
+
+You can modify the program all you want, but don't forget to rebuild the image.
