@@ -1,0 +1,7 @@
+name: person-detection-0202
+weights: person-detection-0202.bin
+model: person-detection-0202.xml
+class_str:  detector.model.PedestrianModels.PedestrianSingle
+input: image
+output: 
+  - detection-out
