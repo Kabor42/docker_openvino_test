@@ -10,6 +10,11 @@ import numpy as np
 from openvino.inference_engine import ie_api
 from dataclasses import dataclass, astuple
 from typing import Dict, List, Any, Tuple
+import argparse
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-s", "--source", type=str, help="Path to capture file.", required=True)
+
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
@@ -137,11 +142,13 @@ def postprocess(
 
 
 def main():
+    args = ap.parse_args()
+
     model = "person-detection-0202"
     model_path = os.path.sep.join([os.environ["HOME"], "models", model, model])
 
     logging.info("Loading camera.")
-    cap = cv.VideoCapture("/dev/video0", cv.CAP_V4L2)
+    cap = cv.VideoCapture(args.source, cv.CAP_ANY)
     if not cap.isOpened():
         logging.error("Cannot open camera.")
         sys.exit()
@@ -165,9 +172,14 @@ def main():
     logging.info(f"{model} input info {input_info}")
     logging.info(f"{model} output info {output_info}")
 
+    total_frames = int(cap.get(cv.CAP_PROP_FRAME_COUNT)) - 2
+
     logging.info("Starting loop")
     try:
         while True:
+            index = int(cap.get(cv.CAP_PROP_POS_FRAMES))
+            if index >= total_frames:
+                cap.set(cv.CAP_PROP_POS_FRAMES, 0)
             ret, frame = cap.read()
             if not ret:
                 logging.error("Error reading frame from source.")
@@ -187,3 +199,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    logging.info("Exit")
